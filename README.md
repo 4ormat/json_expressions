@@ -3,6 +3,9 @@ JSON Expressions
 
 [![Build Status](https://travis-ci.org/chancancode/json_expressions.png?branch=master)](https://travis-ci.org/chancancode/json_expressions)
 
+## Changes in this fork
+Prefixed all core extensions (like `Array#ordered`, `Hash#reject_extra_keys`) with `json_` to avoid collisions.
+
 ## Introduction
 
 Your API is a contract between your service and your developers. It is important for you to know exactly what your JSON API is returning to the developers in order to make sure you don't accidentally change things without updating the documentations and/or bumping the API version number. Perhaps some controller tests for your JSON endpoints would help:
@@ -103,14 +106,14 @@ class UsersControllerTest < MiniTest::Unit::TestCase
               'welcome',
               'introduction'
             ]                                    # Ordering of elements does not matter by default
-          }.ignore_extra_keys!,                  # Skip the uninteresting stuff
+          }.json_ignore_extra_keys!,                  # Skip the uninteresting stuff
           {
             id:      Fixnum,
             subject: 'An awesome blog post',
             user_id: :user_id,
             tags:    ['blog' , 'life']
-          }.ignore_extra_keys!
-        ].ordered!                               # Ensure the posts are in this exact order
+          }.json_ignore_extra_keys!
+        ].json_ordered!                               # Ensure the posts are in this exact order
       }
     }
 
@@ -340,10 +343,10 @@ will match
 You can change this behavior in a case-by-case manner:
 ```ruby
 {
-  unordered_array: [1,2,3,4,5].unordered!, # calling unordered! is optional as it's the default
-  ordered_array:   [1,2,3,4,5].ordered!,
-  unordered_hash:  {a: 1, b: 2}.unordered!,
-  ordered_hash:    {a: 1, b: 2}.ordered!
+  unordered_array: [1,2,3,4,5].json_unordered!, # calling unordered! is optional as it's the default
+  ordered_array:   [1,2,3,4,5].json_ordered!,
+  unordered_hash:  {a: 1, b: 2}.json_unordered!,
+  ordered_hash:    {a: 1, b: 2}.json_ordered!
 }
 ```
 
@@ -376,20 +379,20 @@ will not match
 You can change this behavior in a case-by-case manner:
 ```ruby
 {
-  strict_array:    [1,2,3,4,5].strict!, # calling strict! is optional as it's the default
-  forgiving_array: [1,2,3,4,5].forgiving!,
-  strict_hash:     {a: 1, b: 2}.strict!,
-  forgiving_hash:  {a: 1, b: 2}.forgiving!
+  strict_array:    [1,2,3,4,5].json_strict!, # calling strict! is optional as it's the default
+  forgiving_array: [1,2,3,4,5].json_forgiving!,
+  strict_hash:     {a: 1, b: 2}.json_strict!,
+  forgiving_hash:  {a: 1, b: 2}.json_forgiving!
 }
 ```
 
 They also come with some more sensible aliases:
 ```ruby
 {
-  strict_array:    [1,2,3,4,5].reject_extra_values!,
-  forgiving_array: [1,2,3,4,5].ignore_extra_values!,
-  strict_hash:     {a: 1, b: 2}.reject_extra_keys!,
-  forgiving_hash:  {a: 1, b: 2}.ignore_extra_keys!
+  strict_array:    [1,2,3,4,5].json_reject_extra_values!,
+  forgiving_array: [1,2,3,4,5].json_ignore_extra_values!,
+  strict_hash:     {a: 1, b: 2}.json_reject_extra_keys!,
+  forgiving_hash:  {a: 1, b: 2}.json_ignore_extra_keys!
 }
 ```
 
