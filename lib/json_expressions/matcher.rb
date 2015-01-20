@@ -113,12 +113,12 @@ module JsonExpressions
         return false
       end
 
-      if matcher.strict? && matcher.size < other.size
+      if matcher.json_strict? && matcher.size < other.size
         set_last_error path, "%path% contains too many elements (#{matcher.size} expected but was #{other.size})"
         return false
       end
 
-      if matcher.ordered?
+      if matcher.json_ordered?
         matcher.zip(other).each_with_index { |(v1,v2),i| return false unless match_json(make_path(path,i), v1, v2) }
       else
         other = other.clone
@@ -151,12 +151,12 @@ module JsonExpressions
         return false
       end
 
-      if matcher.strict? && ! extra_keys.empty?
+      if matcher.json_strict? && ! extra_keys.empty?
         set_last_error path, "%path% contains an extra key #{extra_keys.first.to_s}"
         return false
       end
 
-      if matcher.ordered? && matcher.keys != other.keys
+      if matcher.json_ordered? && matcher.keys != other.keys
         set_last_error path, "Incorrect key-ordering at %path% (#{matcher.keys.map(&:to_s).inspect} expected but was #{other.keys.map(&:to_s).inspect})"
         return false
       end
@@ -177,22 +177,22 @@ module JsonExpressions
     end
 
     def apply_array_defaults(array)
-      if ! array.ordered? && ! array.unordered?
-        self.class.assume_unordered_arrays ? array.unordered! : array.ordered!
+      if ! array.json_ordered? && ! array.json_unordered?
+        self.class.assume_unordered_arrays ? array.json_unordered! : array.json_ordered!
       end
 
-      if ! array.strict? && ! array.forgiving?
-        self.class.assume_strict_arrays ? array.strict! : array.forgiving!
+      if ! array.json_strict? && ! array.json_forgiving?
+        self.class.assume_strict_arrays ? array.json_strict! : array.json_forgiving!
       end
     end
 
     def apply_hash_defaults(hash)
-      if ! hash.ordered? && ! hash.unordered?
-        self.class.assume_unordered_hashes ? hash.unordered! : hash.ordered!
+      if ! hash.json_ordered? && ! hash.json_unordered?
+        self.class.assume_unordered_hashes ? hash.json_unordered! : hash.json_ordered!
       end
 
-      if ! hash.strict? && ! hash.forgiving?
-        self.class.assume_strict_hashes ? hash.strict! : hash.forgiving!
+      if ! hash.json_strict? && ! hash.json_forgiving?
+        self.class.assume_strict_hashes ? hash.json_strict! : hash.json_forgiving!
       end
     end
 
